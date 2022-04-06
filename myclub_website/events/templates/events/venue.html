@@ -1,0 +1,15 @@
+{% extends 'events/base.html' %}
+{%block content%}
+<center>
+    <h2>Venues</h2><br>
+    <table class="table table-hover table-striped table-bordered ">
+        {%for venue in venues_list%}
+        <tr>
+            <td>
+                <a href="{% url 'show-venue'  venue.id %}">{{venue}}</a><br><br>
+            </td>
+        </tr>
+        {%endfor%}
+    </table>
+</center>
+{%endblock%}
