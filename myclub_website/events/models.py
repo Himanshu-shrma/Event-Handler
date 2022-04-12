@@ -13,7 +13,7 @@ class Venue(models.Model):
     address=models.CharField('Venue Address ',max_length=120)
     zip_code=models.CharField('Venue zipcode ',max_length=15 ,blank=True)
     phone=models.CharField('Venue Number ',max_length=13,blank=True)
-    web=models.URLField('Website Address ',blank=True)
+    web=models.CharField('Website Address ', max_length=25 ,blank=True)
     email_address=models.EmailField('Venue Email',blank=True)
 
     def __str__(self):

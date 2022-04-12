@@ -54,3 +54,15 @@ def show_venue(request,venue_id):
     return render(request,'events/show_venue.html',{
         'venue':venue,
     })
+
+def search_venues(request):
+    if request.method == "POST":
+        searched_data=request.POST['searched_data']
+        venues=Venue.objects.filter(name__contains=searched_data)
+        return render(request,'events/search_venues.html',{
+            'searched_data':searched_data,
+            'venues':venues,
+        })
+    else:
+        return render(request,'events/search_venues.html',{
+        })  

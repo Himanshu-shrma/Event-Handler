@@ -1,9 +1,10 @@
 {% extends 'events/base.html' %}
 {%block content%}
 <center>
-    <h2>Venues</h2><br>
+    {%if searched_data %}
+    <h1>Search Result for {{searched_data}}</h1><br>
     <table class="table table-hover table-striped table-bordered ">
-        {%for venue in venues_list%}
+        {%for venue in venues%}
         <tr>
             <td>
                 <a href="{% url 'show-venue'  venue.id %}">{{venue}}</a><br><br>
@@ -11,6 +12,8 @@
         </tr>
         {%endfor%}
     </table>
+    {%else%}
+    <h1>You forgot to Search for Venue </h1><br>
+    {%endif%}
 </center>
-
 {%endblock%}

@@ -20,6 +20,6 @@ class VenueForm(ModelForm):
             'address':forms.TextInput(attrs={'class':'form-control','placeholder':'Enter the address'}),
             'zip_code':forms.TextInput(attrs={'class':'form-control','placeholder':'Enter the zipcode'}),
             'phone':forms.TextInput(attrs={'class':'form-control','placeholder':'Enter the Phone Number'}),
-            'web':forms.URLInput(attrs={'class':'form-control','placeholder':'Enter the web address'}),
+            'web':forms.TextInput(attrs={'class':'form-control','placeholder':'Enter the web address'}),
             'email_address':forms.EmailInput(attrs={'class':'form-control','placeholder':'Enter the Email Address'}),
         }

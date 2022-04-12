@@ -20,8 +20,10 @@
                     <a class="nav-link active" aria-current="page" href="{%url 'venues-list' %}">Venues</a>
                 </li>
             </ul>
-            <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <form class="d-flex" method=POST action="{% url 'search-venues' %}">
+                {% csrf_token %}
+                <input class="form-control me-2" type="search" placeholder="Search Venues" aria-label="Search"
+                    name="searched_data">
                 <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
         </div>

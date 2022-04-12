@@ -7,4 +7,5 @@ urlpatterns = [
     path('add_venue',views.add_venue,name='add-venue'),
     path('list_venues',views.list_venues,name='venues-list'),
     path('show_venue/<venue_id>',views.show_venue,name='show-venue'),
+    path('search_venues',views.search_venues,name='search-venues'),
 ]
