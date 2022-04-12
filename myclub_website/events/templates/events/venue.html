@@ -2,11 +2,15 @@
 {%block content%}
 <center>
     <h2>Venues</h2><br>
-    <table class="table table-hover table-striped table-bordered ">
+    <table class="table table-hover">
         {%for venue in venues_list%}
         <tr>
             <td>
-                <a href="{% url 'show-venue'  venue.id %}">{{venue}}</a><br><br>
+                <a href="{% url 'show-venue'  venue.id %}" style="text-decoration: none;">{{venue}}</a>
+            </td>
+            <td align="right">
+                <a href="{% url 'update-venue'  venue.id %}" style="text-decoration: none;"
+                    class="btn btn-outline-success btn-sm"> update</a>
             </td>
         </tr>
         {%endfor%}
