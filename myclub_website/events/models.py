@@ -37,7 +37,7 @@ class Event(models.Model):
     manager= models.ForeignKey(User,blank=True,null=True,on_delete=models.SET_NULL)
     description=models.TextField(blank=True)
     event_hours= models.IntegerField()
-    attendees= models.ManyToManyField(MyClubUser)
+    attendees= models.ManyToManyField(MyClubUser, null=True)
 
     def __str__(self):
         return self.name
