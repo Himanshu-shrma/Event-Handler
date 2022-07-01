@@ -1,12 +1,26 @@
+import imp
 import re
+from urllib import response
 from django.shortcuts import redirect, render
 import calendar
 from calendar import HTMLCalendar
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from datetime import datetime
 from .models import Event, Venue
 from .forms import VenueForm , EventForm
 
+#import for csv download functionality
+import csv
+from django.http import FileResponse
+
+#import for PDF download functionality
+import io
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import inch
+from reportlab.lib.pagesizes import letter
+
+#import for Pagination
+from django.core.paginator import Paginator
 
 
 # Create your views here.
@@ -26,10 +40,15 @@ def home(request,year=datetime.now().year, month=datetime.now().strftime('%B')):
     })
 
 def all_events(request):
-    event_list=Event.objects.all().order_by('event_date')
+    #event_list=Event.objects.all().order_by('event_date')
+
+    p=Paginator(Event.objects.all().order_by('event_date'),2)
+    
+    page= request.GET.get('page')
+    events=p.get_page(page)
     return render(request,'events/event_list.html',{
-        'event_list':event_list
-    })
+        'events':events}
+        )
 
 def add_venue(request):
     submitted=False
@@ -112,4 +131,68 @@ def delete_venue(request,venue_id):
     venue=Venue.objects.get(pk=venue_id)
     venue.delete()
     return redirect('venues-list')
-        
+
+#generating txt file for venues
+
+def venue_txt(request):
+    response=HttpResponse(content_type='text/plain')
+    response['Content-Disposition']='attachment; filename=venues.txt'
+    venues=Venue.objects.all()
+    lines=[]
+    for venue in venues:
+        lines.append(f'Venue name : {venue.name}\nAddress: {venue.address}\nzip_code :  {venue.zip_code}\nphone : {venue.phone}\nweb : {venue.web}\nemail_address : {venue.email_address}\n\n\n')
+
+    response.writelines(lines)        
+    return response
+
+def venue_csv(request):
+    response=HttpResponse(content_type='text/csv')
+    response['Content-Disposition']='attachment; filename=venues.csv'
+    venues=Venue.objects.all()
+
+    #create a csv Writer(Which will write the content in csv writer)
+    writer=csv.writer(response)
+    writer.writerow(['Venue Name','Address','Zip_code','Phone','Web Address','Email'])
+
+    for venue in venues:
+        writer.writerow([venue.name,venue.address,venue.zip_code,venue.phone,venue.web,venue.email_address])
+
+    return response
+
+#Generate PDF file for venues
+
+def venue_pdf(request):
+    #create Bytestream buffer
+    buf=io.BytesIO()
+    #Create a Canvas
+    c=canvas.Canvas(buf,pagesize=letter,bottomup=0)
+    #create a text object
+    txtobj=c.beginText()
+    txtobj.setTextOrigin(inch,inch)
+    txtobj.setFont("Helvetica",14)
+
+    #Add Venues in the pdf
+    venues=Venue.objects.all()
+    lines=[]
+    for venue in venues:
+        lines.append('\t')
+        lines.append(venue.name)
+        lines.append(venue.address)
+        lines.append(venue.zip_code)
+        lines.append(venue.phone)
+        lines.append(venue.web)
+        lines.append(venue.email_address)
+        lines.append(" ")
+        lines.append("___________________________________________")
+        lines.append("___________________________________________")
+        lines.append(" ")
+
+    for line in lines:
+        txtobj.textLine(line)
+
+    c.drawText(txtobj)
+    c.showPage()
+    c.save()
+    buf.seek(0)
+
+    return FileResponse(buf,as_attachment=True,filename='Venue.pdf')

@@ -1,5 +1,6 @@
 {% extends 'events/base.html' %}
 {%block content%}
+{% if user.is_authenticated %}
 <center>
     <h1>Add Venue</h1>
     <br><br>
@@ -16,5 +17,15 @@
     {%endif%}
 
 
+
 </center>
+{% else %}
+<div class="alert alert-danger" role="alert">
+    <h5>
+        Access Denied !! You Need to Login First
+    </h5>
+
+</div>
+<a href="{% url 'login-user' %}" class="btn btn-outline-primary btn"> Login</a>
+{%endif%}
 {%endblock%}

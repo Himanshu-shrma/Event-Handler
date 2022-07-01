@@ -13,4 +13,7 @@ urlpatterns = [
     path('update_event/<event_id>',views.update_event,name='update-event'),
     path('delete_event/<event_id>',views.delete_event,name='delete-event'),
     path('delete_venue/<venue_id>',views.delete_venue,name='delete-venue'),
+    path('venue_txt',views.venue_txt,name='venue_txt'),
+    path('venue_csv',views.venue_csv,name='venue_csv'),
+    path('venue_pdf',views.venue_pdf,name='venue_pdf'),
 ]
