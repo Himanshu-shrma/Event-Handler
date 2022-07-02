@@ -1,19 +1,42 @@
 {% extends 'events/base.html' %}
 {%block content%}
-<center>
-    {%if searched_data %}
-    <h1>Search Result for {{searched_data}}</h1><br>
-    <table class="table table-hover table-striped table-bordered ">
-        {%for venue in venues%}
-        <tr>
-            <td>
-                <a href="{% url 'show-venue'  venue.id %}">{{venue}}</a><br><br>
-            </td>
-        </tr>
-        {%endfor%}
-    </table>
-    {%else%}
-    <h1>You forgot to Search for Venue </h1><br>
-    {%endif%}
-</center>
+
+<div class="card">
+    <div class="card-header">
+        <center>
+            {%if searched_data %}
+            Search Result for <b>{{searched_data}}</b>
+            {%else%}
+            <b>**Error** You forgot to Search for Venue!!</b>
+
+            {%endif%}
+        </center>
+    </div>
+</div>
+
+{%if searched_data %}
+<br>
+{%for venue in venues%}
+<div class="card">
+    <div class="card-header">
+        Venue
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">{{ venue }}</h5>
+        <p class="card-text">
+        <ul>
+
+            <li><b> Address - </b>{{ venue.address }}</li>
+            <li> <b> Zip Code - </b>{{ venue.zip_code }}</li>
+            <li> <b> Mobile No. - </b>{{ venue.phone }}</li>
+            <li> <b> Website - </b>{{ venue.web }}</li>
+            <li> <b> Email - </b>{{ venue.email_address }}</li>
+            <li> <b> Venue Owner - </b>{{ owner_info.first_name }} {{owner_info.last_name}}</li>
+        </ul>
+        </p>
+
+    </div>
+</div>
+{%endfor%}
+{%endif%}
 {%endblock%}

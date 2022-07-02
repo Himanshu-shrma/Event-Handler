@@ -15,6 +15,8 @@ class Venue(models.Model):
     phone=models.CharField('Venue Number ',max_length=13,blank=True)
     web=models.CharField('Website Address ', max_length=25 ,blank=True)
     email_address=models.EmailField('Venue Email',blank=True)
+    owner=models.IntegerField('Venue Owner',blank=False,default=1)
+
 
     def __str__(self):
         return self.name
@@ -28,7 +30,6 @@ class Event(models.Model):
     # venue=models.CharField(max_length=120)
     manager= models.ForeignKey(User,blank=True,null=True,on_delete=models.SET_NULL)
     description=models.TextField(blank=True)
-    event_hours= models.IntegerField()
     attendees= models.ManyToManyField(User, null=True,related_name="all_users")
 
     def __str__(self):

@@ -1,9 +1,9 @@
 {% extends 'events/base.html' %}
 {%block content%}
 
-<h1>Events List</h1>
+<h2>My Events </h2>
 
-{%for event in events%}
+{%for event in my_event %}
 
 <div class="card">
     <div class="card-header">
@@ -24,7 +24,6 @@
             </li>
             <br>
         </ul>
-
         </p>
 
     </div>

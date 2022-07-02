@@ -1,32 +1,31 @@
 {% extends 'events/base.html' %}
 {%block content%}
 {% if user.is_authenticated %}
-<center>
-    {% if user == event.manager %}
-    <h2>Update Event </h2><br>
 
-    <form action="" method=POST>
-        {%csrf_token%}
-        {{form.as_p}}
-        <input type="submit" value="Update" class="btn btn-outline-success">
+{% if user == event.manager %}
+<h2>Update Event </h2><br>
 
-    </form>
+<form action="" method=POST>
+    {%csrf_token%}
+    {{form.as_p}}
+    <input type="submit" value="Update" class="btn btn-outline-success">
 
-    {% else %}
-    <div class="alert alert-danger" role="alert">
-        <h5>
-            Access Denied !! Only Event Manager can Update their Event.
-        </h5>
+</form>
 
-        <p>Event Manager ---> {{event.manager}} </p>
-        <br>
-        <p>Logged in as ---> {{user}} </p>
+{% else %}
+<div class="alert alert-danger" role="alert">
+    <h5>
+        Access Denied !! Only Event Manager can Update their Event.
+    </h5>
 
-    </div>
-    <a href="{% url 'login-user' %}" class="btn btn-outline-primary btn"> Login</a>
-    {%endif%}
+    <p>Event Manager ---> {{event.manager}} </p>
+    <br>
+    <p>Logged in as ---> {{user}} </p>
 
-</center>
+</div>
+<a href="{% url 'login-user' %}" class="btn btn-outline-primary btn"> Login</a>
+{%endif%}
+
 {% else %}
 <div class="alert alert-danger" role="alert">
     <h5>

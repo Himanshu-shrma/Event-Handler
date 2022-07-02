@@ -1,8 +1,37 @@
 {% extends 'events/base.html' %}
 {%block content%}
 <center>
-    <h2>Hello {{name}}!!<br><br> Calendar for {{year}} / {{month}} </h2><br>
+    {% if user.is_authenticated %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        Hello {{name}}!!
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {%endif%}
+    <h2> Calendar for {{year}} / {{month}} </h2><br>
     {{cal|safe}} <br>
-    copyright(c) {{time}}
 </center>
+<br><br><br>
+{% if user.is_authenticated %}
+<div class="card">
+    <div class="card-header">
+        <b> Upcoming events This Month</b>
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">{{ venue }}</h5>
+        <p class="card-text">
+            {%if event_list %}
+            {%for event in event_list%}
+            {{event.event_date}} - <a href="{% url 'show_event'  event.id %}"
+                style="text-decoration: none;">{{event}}</a>
+            <br>
+            {%endfor%}
+            {%else%}
+            No Events This Month
+            {%endif%}
+        </p>
+    </div>
+</div>
+{%endif%}
+<br>
+
 {%endblock%}
