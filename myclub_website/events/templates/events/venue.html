@@ -18,7 +18,8 @@
                 <a href="{% url 'delete-venue'  venue.id %}" style="text-decoration: none;"
                     class="btn btn-outline-danger btn-sm"> Delete</a>
             </td>
-
+            {%else%}
+            <td align="right"></td>
             {%endif%}
         </tr>
         {%endfor%}
