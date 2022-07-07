@@ -15,7 +15,10 @@
             <li> <b> Mobile No. - </b>{{ venue.phone }}</li>
             <li> <b> Website - </b>{{ venue.web }}</li>
             <li> <b> Email - </b>{{ venue.email_address }}</li>
-            <li> <b> Venue Owner - </b>{{ owner_info.first_name }} {{owner_info.last_name}}</li>
+            <li> <b> Venue Owner - </b>{{ owner_info.first_name }} {{owner_info.last_name}}</li><br>
+            {%if venue.venue_image %}
+            <img src="{{venue.venue_image.url}}" alt="" width="500">
+            {%endif%}
         </ul>
         </p>
 

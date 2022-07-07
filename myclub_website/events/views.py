@@ -31,6 +31,8 @@ def home(request,year=datetime.now().year, month=datetime.now().strftime('%B')):
     cal=HTMLCalendar().formatmonth(year,month_number)
     now=datetime.now()
     time=now.strftime('%I:%M:%S %p')
+
+    
     if request.user.is_authenticated:
         name=User.objects.get(username=request.user.username).first_name
         event_list=Event.objects.filter(
@@ -57,19 +59,22 @@ def home(request,year=datetime.now().year, month=datetime.now().strftime('%B')):
 
 def all_events(request):
     #event_list=Event.objects.all().order_by('event_date')
-
-    p=Paginator(Event.objects.all().order_by('event_date'),2)
-    
-    page= request.GET.get('page')
-    events=p.get_page(page)
-    return render(request,'events/event_list.html',{
-        'events':events}
-        )
+    if request.user.is_authenticated:
+        p=Paginator(Event.objects.all().order_by('-event_date'),8)
+        
+        page= request.GET.get('page')
+        event_list=p.get_page(page)
+        return render(request,'events/event_list.html',{
+            'event_list':event_list}
+            )
+    else:
+        messages.success(request,("You are not logged in, Please Log in first"))
+        return redirect('home')
 
 def add_venue(request):
     submitted=False
     if request.method=="POST":
-        form=VenueForm(request.POST)
+        form=VenueForm(request.POST,request.FILES)
         if form.is_valid():
             venue=form.save(commit=False)
             venue.owner=request.user.id
@@ -116,20 +121,24 @@ def search_venues(request):
         })  
 
 def search_events(request):
-    if request.method == "POST":
-        searched_data=request.POST['searched_data']
-        events=Event.objects.filter(name__contains=searched_data)
-        return render(request,'events/search_events.html',{
-            'searched_data':searched_data,
-            'events':events,
-        })
-    else:
-        return render(request,'events/search_events.html',{
-        })  
+    if request.user.is_authenticated:
+
+        if request.method == "POST":
+            searched_data=request.POST['searched_data']
+            events=Event.objects.filter(name__contains=searched_data)
+            return render(request,'events/search_events.html',{
+                'searched_data':searched_data,
+                'events':events,
+            })
+        else:
+            return render(request,'events/search_events.html',{
+            })  
+    messages.success(request,("You are Not Logged in, Please Log in first!"))
+    return redirect('home')
 
 def update_venue(request,venue_id):
     venue=Venue.objects.get(pk=venue_id)
-    form=VenueForm(request.POST or None, instance=venue)
+    form=VenueForm(request.POST or None,request.FILES or None, instance=venue)
     if form.is_valid():
         form.save()
         return redirect('venues-list')
@@ -184,15 +193,23 @@ def delete_event(request,event_id):
         messages.success(request,("Event Deleted!! "))
         return redirect('list-events')  
     else:
-        messages.success(request,("You are not Authorize to do this!! "))
+        messages.success(request,("You are not Authorize to do this Please Login with Correct id!! "))
         return redirect('list-events')  
     
 
 def delete_venue(request,venue_id):
-    venue=Venue.objects.get(pk=venue_id)
-    venue.delete()
-    return redirect('venues-list')
-
+    if request.user.is_authenticated:
+        venue=Venue.objects.get(pk=venue_id)
+        if venue.owner==request.user.id:
+            venue.delete()
+            messages.success(request,("Venue Deleted Successfully"))
+            return redirect('venues-list')
+        else:
+            messages.success(request,("Please Log in with owner id to access this page!!"))
+            return redirect('home')    
+    else:
+        messages.success(request,("Please Log in to access this page!!"))
+        return redirect('home')
 #generating txt file for venues
 
 def venue_txt(request):
@@ -263,13 +280,37 @@ def venue_pdf(request):
 
 def my_events(request):
     if request.user.is_authenticated:
-        my_event=Event.objects.filter(attendees=request.user.id)
-        return render(request,
-        'events/my_events.html',
-        {
-            'my_event':my_event,
-        })
-
+        p=Paginator(Event.objects.filter(attendees=request.user.id).order_by('-event_date'),8)
+        page= request.GET.get('page')
+        event_list=p.get_page(page)
+        return render(request,'events/my_events.html',{
+            'event_list':event_list}
+        )
     else:
         messages.success(request,("You are not Authorize to View This Page!! "))
         return redirect('home') 
+
+def approve_events(request):
+    if request.user.is_authenticated:
+        venue_list=Venue.objects.filter(owner=request.user.id).order_by('name')
+        event_list=list();
+        for venue in venue_list:
+            event_list+=(Event.objects.filter(venue=venue).order_by('event_date'))
+        if request.method=="POST":
+            id_list=request.POST.getlist('boxes')
+            for event in event_list:
+                Event.objects.filter(pk=event.id).update(approved=False)
+            for x in id_list:
+                Event.objects.filter(pk=int(x)).update(approved=True)
+            messages.success(request,('Approval List has been Updated'))
+            return redirect('list-events')
+
+
+
+        else:
+            return render(request,'events/event_approval.html',{
+                'event_list':event_list
+            })
+    else:
+        messages.success(request,('You are not authorized to view Event approval page! Please login/Register'))
+        return redirect('home')

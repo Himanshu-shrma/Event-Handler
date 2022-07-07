@@ -7,8 +7,14 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     {%endif%}
-    <h2> Calendar for {{year}} / {{month}} </h2><br>
-    {{cal|safe}} <br>
+    <br><br>
+    <b> Calendar for {{year}} / {{month}} </b> <br><br>
+    <div class="shadow-lg p-4 mb-5 bg body rounded" style="background: #ffff; max-width: 300px;">
+        <center>
+
+            {{cal|safe}} <br>
+        </center>
+    </div>
 </center>
 <br><br><br>
 {% if user.is_authenticated %}

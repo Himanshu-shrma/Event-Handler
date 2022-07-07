@@ -1,11 +1,6 @@
-from ctypes import addressof
-import email
-from multiprocessing import managers
-from unicodedata import name
-import webbrowser
 from django.db import models
 from django.contrib.auth.models import User
-
+from datetime import date
 
 
 class Venue(models.Model):
@@ -16,7 +11,7 @@ class Venue(models.Model):
     web=models.CharField('Website Address ', max_length=25 ,blank=True)
     email_address=models.EmailField('Venue Email',blank=True)
     owner=models.IntegerField('Venue Owner',blank=False,default=1)
-
+    venue_image=models.ImageField(null=True,blank=True,upload_to="images/")
 
     def __str__(self):
         return self.name
@@ -31,6 +26,13 @@ class Event(models.Model):
     manager= models.ForeignKey(User,blank=True,null=True,on_delete=models.SET_NULL)
     description=models.TextField(blank=True)
     attendees= models.ManyToManyField(User, null=True,related_name="all_users")
+    approved=models.BooleanField("Approced",default=False)
 
     def __str__(self):
         return self.name
+
+    @property
+    def days_left(self):
+        today=date.today()
+        days_left=self.event_date.date()-today
+        return str(days_left).split(",",1)[0]

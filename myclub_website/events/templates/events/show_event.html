@@ -10,14 +10,16 @@
         <p class="card-text">
         <ul>
             <li>Date - {{ event.event_date }}</li>
-
+            <li>Days Left : {{event.days_left}} </li>
             <li>Manager Name - {{ event.manager }}</li>
             <li>Description - {{ event.description }}</li>
+            <li>Venue -<a href="{% url 'show-venue'  event.venue.id %}">{{event.venue}}</a></li>
             <li> Attendees -
                 {% for attendees in event.attendees.all %}
                 {{attendees}}
                 {%endfor%}
             </li>
+            <li>Approved : {{event.approved}}</li>
             <br>
         </ul>
 

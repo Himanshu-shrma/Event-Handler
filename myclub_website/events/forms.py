@@ -6,7 +6,7 @@ from .models import Venue , Event
 class VenueForm(ModelForm):
     class Meta:
         model=Venue
-        fields= ('name', 'address','zip_code','phone','web','email_address',)
+        fields= ('name', 'address','zip_code','phone','web','email_address','venue_image')
         labels={
             'name':'',
             'address':'',
@@ -14,6 +14,7 @@ class VenueForm(ModelForm):
             'phone':'',
             'web':'',
             'email_address':'',
+            'venue_image':'',
         }
         widgets={
             'name':forms.TextInput(attrs={'class':'form-control','placeholder':'Enter the Name of the venue'}),
@@ -32,7 +33,6 @@ class EventFormAdmin(ModelForm):
             'name':'',
             'event_date':'YYYY-MM-DD HH:MM:SS',
             'venue':'Venues',
-            'manager':'Managers',
             'attendees':'Attendees',
             'description':'',
         }

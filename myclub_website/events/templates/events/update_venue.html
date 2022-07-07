@@ -3,7 +3,7 @@
 {% if user.is_authenticated %}
 <center>
     <h2>Update Venue </h2><br>
-    <form action="" method=POST>
+    <form action="" method=POST enctype="multipart/form-data">
         {%csrf_token%}
         {{form.as_p}}
         <input type="submit" value="Update" class="btn btn-outline-success">
