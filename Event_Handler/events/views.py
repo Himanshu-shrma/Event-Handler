@@ -1,3 +1,4 @@
+from email import message
 import imp
 import re
 from urllib import response
@@ -26,36 +27,33 @@ from django.core.paginator import Paginator
 
 # Create your views here.
 def home(request,year=datetime.now().year, month=datetime.now().strftime('%B')):
-    month=month.capitalize()
-    month_number=list(calendar.month_name).index(month)
-    cal=HTMLCalendar().formatmonth(year,month_number)
-    now=datetime.now()
-    time=now.strftime('%I:%M:%S %p')
-
-    
     if request.user.is_authenticated:
+        month=month.capitalize()
+        month_number=list(calendar.month_name).index(month)
+        cal=HTMLCalendar().formatmonth(year,month_number)
+        now=datetime.now()
+        time=now.strftime('%I:%M:%S %p')
         name=User.objects.get(username=request.user.username).first_name
-        event_list=Event.objects.filter(
+        upcoming_event_list=Event.objects.filter(
+            event_date__month =datetime.now().month,
             event_date__gte =datetime.now(),
             attendees=request.user,
         ).order_by('event_date')
-    else:
+        past_event_list=Event.objects.filter(
+            event_date__month =datetime.now().month,
+            event_date__lt =datetime.now(),
+            attendees=request.user,
+        ).order_by('event_date')   
         return render (request,'events/home.html',
-    { 
-        'year':year,
-        'month':month,
-        "cal":cal,
-        "time":time,
-    })
-    
-    return render (request,'events/home.html',
-    {   'name':name,
-        'year':year,
-        'month':month,
-        "cal":cal,
-        "time":time,
-        "event_list":event_list,
-    })
+        {   'name':name,
+            'year':year,
+            'month':month,
+            "cal":cal,
+            "time":time,
+            "upcoming_event_list":upcoming_event_list,
+            "past_event_list":past_event_list,
+        })
+    return redirect('login-user')
 
 def all_events(request):
     #event_list=Event.objects.all().order_by('event_date')
@@ -87,42 +85,54 @@ def add_venue(request):
     return render(request,'events/add_venue.html',{'form':form,'submitted':submitted})
 
 def list_venues(request):
-    venue_list= Venue.objects.all().order_by('name')
-    return render(request,'events/venue.html',{
-        'venues_list':venue_list
-    })
+    if request.user.is_authenticated:
+        venue_list= Venue.objects.all().order_by('name')
+        return render(request,'events/venue.html',{
+            'venues_list':venue_list
+        })
+    messages.success(request,"You need to log in first!!")
+    return redirect('login-user')
 
 def show_venue(request,venue_id):
-    venue=Venue.objects.get(pk=venue_id)
-    owner_info= User.objects.get(pk=venue.owner)
-    return render(request,'events/show_venue.html',{
-        'venue':venue,
-        'owner_info':owner_info,
-    })
+    if request.user.is_authenticated:
+        venue=Venue.objects.get(pk=venue_id)
+        owner_info= User.objects.get(pk=venue.owner)
+        return render(request,'events/show_venue.html',{
+            'venue':venue,
+            'owner_info':owner_info,
+        })
+    messages.success(request,"You need to log in first!!")
+    return redirect('login-user')
+
 
 def show_event(request,event_id):
-    event=Event.objects.get(pk=event_id)
-    return render(request,"events/show_event.html",
-    {
-        'event':event,
-    }
-    )
+    if request.user.is_authenticated:
+        event=Event.objects.get(pk=event_id)
+        return render(request,"events/show_event.html",
+        {
+            'event':event,
+        }
+        )
+    messages.success(request,"You need to log in first!!")
+    return redirect('login-user')
 
 def search_venues(request):
-    if request.method == "POST":
-        searched_data=request.POST['searched_data']
-        venues=Venue.objects.filter(name__contains=searched_data)
-        return render(request,'events/search_venues.html',{
-            'searched_data':searched_data,
-            'venues':venues,
-        })
-    else:
-        return render(request,'events/search_venues.html',{
-        })  
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            searched_data=request.POST['searched_data']
+            venues=Venue.objects.filter(name__contains=searched_data)
+            return render(request,'events/search_venues.html',{
+                'searched_data':searched_data,
+                'venues':venues,
+            })
+        else:
+            return render(request,'events/search_venues.html',{
+            })
+    messages.success(request,"You need to log in first!!")
+    return redirect('login-user')
 
 def search_events(request):
     if request.user.is_authenticated:
-
         if request.method == "POST":
             searched_data=request.POST['searched_data']
             events=Event.objects.filter(name__contains=searched_data)
@@ -137,6 +147,7 @@ def search_events(request):
     return redirect('home')
 
 def update_venue(request,venue_id):
+    
     venue=Venue.objects.get(pk=venue_id)
     form=VenueForm(request.POST or None,request.FILES or None, instance=venue)
     if form.is_valid():

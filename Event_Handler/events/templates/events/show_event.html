@@ -3,7 +3,7 @@
 
 <div class="card">
     <div class="card-header">
-        <b>{{event}}</b>
+        <h3>{{event}}</h4>
     </div>
     <div class="card-body">
         <h5 class="card-title"><a href="{% url 'show-venue'  event.venue.id %}"
@@ -19,7 +19,13 @@
                 {{attendees}}
                 {%endfor%}
             </li>
-            <li>Approved : {{event.approved}}</li>
+            <li>Approved :
+                {% if event.approved %}
+                    &#9745
+                {%else%}
+                    &#9746
+                {%endif%}
+            </li>
             <br>
         </ul>
 

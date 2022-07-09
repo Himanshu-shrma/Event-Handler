@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{%url 'home' %}">My Club</a>
+        <a class="navbar-brand" href="{%url 'home' %}">E-Handler</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -49,33 +49,35 @@
                         </li>
 
                     </ul>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="{% url 'approve_events' %}">Event Approval</a>
                 </li>
-                </li>
                 {%endif%}
-                {% if user.is_authenticated %}
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{% url 'logout-user' %}">Logout</a>
-                </li>
-                {% else %}
-
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{% url 'register-user' %}">SignUp</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{% url 'login-user' %}">Login</a>
-                </li>
-                {% endif %}
             </ul>
-
-            <form class="d-flex" method=POST action="{% url 'search-venues' %}">
+            {% if user.is_authenticated %}
+            <form class="d-flex" method=POST action="{% url 'search-venues' %}" style="padding-right: 0.7mm;">
                 {% csrf_token %}
                 <input class="form-control me-2" type="search" placeholder="Search Venues" aria-label="Search"
                     name="searched_data">
                 <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
+
+            <div style="color: white; padding: 0.5rem 0.5rem;"> {{user.first_name}} </div>
+
+            <a class="nav-link active" aria-current="page" href="{% url 'logout-user' %}"
+                style="color: white; padding: 0.5rem 0.5rem">Logout</a>
+            {% else %}
+
+            <a class="nav-link active" aria-current="page" href="{% url 'register-user' %}"
+                style="color: white; padding: 0.5rem 0.5rem">Signup</a>
+
+            <a class="nav-link active" aria-current="page" href="{% url 'login-user' %}"
+                style="color: white; padding: 0.5rem 0.5rem">Login</a>
+            {% endif %}
+
+
+
         </div>
     </div>
 </nav>

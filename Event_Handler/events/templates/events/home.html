@@ -4,10 +4,10 @@
     {% if user.is_authenticated %}
     <div class="alert alert-warning alert-dismissible fade show" role="alert">
         Hello {{name}}!!
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
     </div>
     {%endif%}
-    <br><br>
+    <br>
     <b> Calendar for {{year}} / {{month}} </b> <br><br>
     <div class="shadow-lg p-4 mb-5 bg body rounded" style="background: #ffff; max-width: 300px;">
         <center>
@@ -20,19 +20,25 @@
 {% if user.is_authenticated %}
 <div class="card">
     <div class="card-header">
-        <b> Upcoming events This Month</b>
+        <b> Events This Month</b>
     </div>
     <div class="card-body">
         <h5 class="card-title">{{ venue }}</h5>
         <p class="card-text">
-            {%if event_list %}
-            {%for event in event_list%}
-            {{event.event_date}} - <a href="{% url 'show_event'  event.id %}"
+            {%if past_event_list or upcoming_event_list %}
+            {%for event in past_event_list%}
+            {{event.event_date}} - <del> <a href="{% url 'show_event'  event.id %}"
+                style="text-decoration: none;">{{event}}</a> </del>
+            <br>
+            {%endfor%}
+
+            {%for event in upcoming_event_list%}
+            {{event.event_date}} -  <a href="{% url 'show_event'  event.id %}"
                 style="text-decoration: none;">{{event}}</a>
             <br>
             {%endfor%}
             {%else%}
-            No Events This Month
+                No Events This Month
             {%endif%}
         </p>
     </div>
