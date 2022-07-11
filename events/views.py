@@ -1,7 +1,3 @@
-from email import message
-import imp
-import re
-from urllib import response
 from django.shortcuts import redirect, render
 import calendar
 from calendar import HTMLCalendar
