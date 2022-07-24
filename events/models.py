@@ -26,7 +26,7 @@ class Event(models.Model):
     manager= models.ForeignKey(User,blank=True,null=True,on_delete=models.SET_NULL)
     description=models.TextField(blank=True)
     attendees= models.ManyToManyField(User,blank=True,related_name="all_users")
-    approved=models.BooleanField("Approced",default=False)
+    approved=models.BooleanField("Approved",default=False)
 
     def __str__(self):
         return self.name
@@ -35,4 +35,12 @@ class Event(models.Model):
     def days_left(self):
         today=date.today()
         days_left=self.event_date.date()-today
-        return str(days_left).split(",",1)[0]
+        temp=str(days_left).split(",",1)[0].split(' ')[0]
+        return int(temp)
+
+    @property
+    def is_past(self):
+        today=date.today()
+        if self.event_date.date() > today:
+            return "Future"
+        return "Past"

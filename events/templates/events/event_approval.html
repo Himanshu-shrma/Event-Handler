@@ -17,13 +17,14 @@
                 </thead>
                 <tbody>
                     {%for event in event_list%}
+                    {% if event.days_left > 0 %}
                     <tr>
                         <td>
-                            {{event.venue}}
+                            <a href="{% url 'show-venue'  event.venue.id %}" style="text-decoration: none;">{{event.venue}}</a>
 
                         </td>
                         <td>
-                            {{event}}
+                            <a href="{% url 'show_event'  event.id %}" style="text-decoration: none;">{{event}}</a>
                         </td>
                         <td>
                             {%if event.approved %}
@@ -38,6 +39,7 @@
                             {%endif%}
                         </td>
                     </tr>
+                    {% endif %}
                     {%endfor%}
                 </tbody>
             </table>

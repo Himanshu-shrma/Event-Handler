@@ -21,7 +21,7 @@
         <tr>
             <td align="left">{{event.event_date}}</td>
             <td>
-                {%if '-' in event.days_left%}
+                {%if event.days_left < 0 %}
                 <del><a href="{% url 'show_event'  event.id %}" style="text-decoration: none;">{{event}}</a></del>
                 {%else%}
                 <a href="{% url 'show_event'  event.id %}" style="text-decoration: none;">{{event}}</a>
