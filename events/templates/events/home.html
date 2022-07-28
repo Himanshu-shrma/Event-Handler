@@ -2,10 +2,12 @@
 {%block content%}
 <center>
     {% if user.is_authenticated %}
-    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        Hello {{name}}!!
+    <br>
+    <div class="container">
+       <h3> Hello {{name|title }}!!</h3>
 
     </div>
+    <br>
     {%endif%}
     <br>
     <b> Calendar for {{year}} / {{month}} </b> <br><br>

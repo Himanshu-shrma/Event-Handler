@@ -19,9 +19,8 @@ from reportlab.lib.pagesizes import letter
 from django.contrib.auth.models import User
 #import for Pagination
 from django.core.paginator import Paginator
-
-
 # Create your views here.
+
 def home(request,year=datetime.now().year, month=datetime.now().strftime('%B')):
     if request.user.is_authenticated:
         month=month.capitalize()
