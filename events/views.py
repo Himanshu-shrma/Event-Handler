@@ -19,8 +19,10 @@ from reportlab.lib.pagesizes import letter
 from django.contrib.auth.models import User
 #import for Pagination
 from django.core.paginator import Paginator
+from django.views.decorators.cache import cache_control
 # Create your views here.
 
+@cache_control(no_cache=True, must_revalidate=True,no_store=True)
 def home(request,year=datetime.now().year, month=datetime.now().strftime('%B')):
     if request.user.is_authenticated:
         month=month.capitalize()
@@ -49,6 +51,7 @@ def home(request,year=datetime.now().year, month=datetime.now().strftime('%B')):
             "past_event_list":past_event_list,
         })
     return redirect('login-user')
+
 
 def all_events(request):
     #event_list=Event.objects.all().order_by('event_date')

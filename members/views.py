@@ -4,7 +4,7 @@ from django.contrib import messages
 from .forms import RegisterUserForm
 #for regirstration of user
 from django.contrib.auth.forms import UserCreationForm
-
+from django.views.decorators.cache import cache_control
 
 def register_user(request):
     if request.method=="POST":
@@ -23,15 +23,20 @@ def register_user(request):
         'form':form,
     })
 
+#@cache_control(no_cache=True, must_revalidate=True,no_store=True)
 def logout_user(request):
-    request.session.flush()
+
+    if not request.user.is_authenticated:
+        return redirect('home')
     messages.success(request,"Log out Successfully")
     logout(request)
     return redirect('home')
 
 
-
+@cache_control(no_cache=True, must_revalidate=True,no_store=True)
 def login_user(request):
+    if request.user.is_authenticated:
+        return redirect('home')
     if request.method=='POST':
         username = request.POST['username']
         password = request.POST['password']
